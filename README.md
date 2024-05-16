@@ -15,9 +15,9 @@ JDK 21
 
 ```bash
 docker run -d \
-  -p 8080:8080 \
-  -v ./application.yml:/app/config/application.yml \
-  zhuweiyou/msg-bot:latest
+    -p 8080:8080 \
+    -v ./application.yml:/app/config/application.yml \
+    zhuweiyou/msg-bot:latest
 ```
 
 ## 对接平台
