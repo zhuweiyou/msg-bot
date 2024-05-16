@@ -1,28 +1,13 @@
 # msg-bot
 
-自用的消息机器人, 支持扩展任意机器人/公众号等可以自动回复或消息通知的平台 (目前仅实现 ntchat)
+自用的消息机器人, 支持扩展任意机器人/公众号等可以自动回复或消息通知的平台
 
-## 使用
+> 目前仅实现 ntchat, 可以继承 `Platform` 实现任意平台
 
-### 环境
+## 环境要求
 
-jdk 21
+JDK 21
 
-### 配置
+## 回调地址
 
-```bash
-cp src/main/resources/application-example.yml src/main/resources/application.yml
-# 并填写配置
-```
-
-### 构建
-
-```bash
-make build
-```
-
-### 启动
-
-```bash
-TZ=Asia/Shanghai java -jar msg-bot.jar
-```
+- ntchat: `http://localhost:8080/ntchat/webhook`
