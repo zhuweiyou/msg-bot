@@ -1,5 +1,5 @@
 app:
-  server-url:
+  server-url: http://localhost:8080
   bot-name: my-bot
 
 platform:
@@ -7,7 +7,7 @@ platform:
     bot-wxid:
     admin-wxid:
     guid:
-    api-url:
+    api-url: http://localhost:8000
 
 plugin:
   translator:
