@@ -4,9 +4,15 @@
 
 > 目前仅实现 ntchat, 可以继承 `Platform` 实现任意平台
 
-## 环境要求
+## 开发环境
 
 JDK 21
+
+## 一键运行
+
+```bash
+docker run -d -p 8080:8080 zhuweiyou/msg-bot:latest
+```
 
 ## 回调地址
 
