@@ -10,8 +10,13 @@ JDK 21
 
 ## 一键运行
 
+不需要下载项目, 单独下载 `src/main/resources/application.yml` 填好配置放到当前目录 `./application.yml`
+
 ```bash
-docker run -d -p 8080:8080 zhuweiyou/msg-bot:latest
+docker run -d \
+	-p 8080:8080 \
+	-v ./application.yml:/app/config/application.yml \
+	zhuweiyou/msg-bot:latest
 ```
 
 ## 回调地址
