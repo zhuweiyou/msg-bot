@@ -13,7 +13,7 @@ JDK 21
 
 ```bash
 # 如果你不修改代码 不需要这一步
-docker build -t zhuweiyou/msg-bot:latest
+docker build -t zhuweiyou/msg-bot:latest .
 
 # 运行
 docker run -d \
