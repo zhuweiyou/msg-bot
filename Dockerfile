@@ -1,7 +1,7 @@
 FROM openjdk:21-jdk-slim as builder
 COPY . ./app
 WORKDIR /app
-RUN chmod 777 ./mvnw
+RUN chmod +x ./mvnw
 RUN ./mvnw -B clean package -Dmaven.test.skip=true -Dautoconfig.skip
 
 FROM openjdk:21-jdk-slim
