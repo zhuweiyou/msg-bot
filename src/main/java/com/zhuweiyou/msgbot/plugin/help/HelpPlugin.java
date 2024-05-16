@@ -18,7 +18,8 @@ public class HelpPlugin extends CommandPlugin {
 			"[JS] 运行JS代码",
 			"[RAW] 输出消息原始内容",
 			"[PY] 汉字转拼音",
-			"https://github.com/zhuweiyou/msg-bot");
+			"",
+			"github.com/zhuweiyou/msg-bot");
 	}
 
 	@Override

@@ -6,7 +6,6 @@ import com.zhuweiyou.msgbot.platform.Msg;
 import com.zhuweiyou.msgbot.platform.Platform;
 import com.zhuweiyou.msgbot.platform.User;
 import com.zhuweiyou.msgbot.platform.ntchat.client.*;
-import com.zhuweiyou.msgbot.sensitiveword.SensitiveWord;
 import com.zhuweiyou.msgbot.store.MemoryStore;
 import com.zhuweiyou.msgbot.store.Store;
 import org.apache.logging.log4j.util.Strings;
@@ -25,13 +24,11 @@ public class NtchatPlatform implements Platform {
 	private final NtchatConfig ntchatConfig;
 	private final Store store = new MemoryStore();
 	private final NtchatClient ntchatClient;
-	private final SensitiveWord sensitiveWord;
 
 	@Autowired
-	public NtchatPlatform(NtchatConfig ntchatConfig, SensitiveWord sensitiveWord) {
+	public NtchatPlatform(NtchatConfig ntchatConfig) {
 		this.ntchatConfig = ntchatConfig;
 		this.ntchatClient = new NtchatClient(ntchatConfig.getApiUrl(), ntchatConfig.getGuid());
-		this.sensitiveWord = sensitiveWord;
 	}
 
 	public Optional<Msg> parseBody(NtchatWebhookBody body) {
@@ -135,7 +132,6 @@ public class NtchatPlatform implements Platform {
 			return;
 		}
 
-		text = sensitiveWord.replace(text);
 		ntchatClient.sendRequest(new NtchatSendTextRequest(groupId, text));
 	}
 
@@ -145,7 +141,6 @@ public class NtchatPlatform implements Platform {
 			return;
 		}
 
-		text = sensitiveWord.replace(text);
 		ntchatClient.sendRequest(new NtchatSendRoomAtRequest(groupId, text, atUserIds));
 	}
 
@@ -200,7 +195,6 @@ public class NtchatPlatform implements Platform {
 		if (Strings.isBlank(msg.getGroupId())) {
 			request.setTo_wxid(msg.getUserId());
 		} else {
-			text = sensitiveWord.replace(text);
 			request.setTo_wxid(msg.getGroupId());
 		}
 		request.setText(text.trim());
