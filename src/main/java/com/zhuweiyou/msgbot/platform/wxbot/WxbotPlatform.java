@@ -34,14 +34,14 @@ public class WxbotPlatform implements Platform {
 	}
 
 	public Optional<Msg> parseBody(WxbotWebhookBody body) {
-		Msg msg = new Msg();
-
 		WxbotWebhookBody.Data data = body.getData().getFirst();
 		if (data == null) {
 			return Optional.empty();
 		}
 
+		Msg msg = new Msg();
 		if (data.isGroup()) {
+			msg.setGroupId(Objects.toString(data.getStrTalker(), ""));
 			if (data.isSelf()) {
 				msg.setUserId(wxbotConfig.getBotWxid());
 			} else {
@@ -49,18 +49,12 @@ public class WxbotPlatform implements Platform {
 			}
 		} else {
 			msg.setUserId(Objects.toString(data.getStrTalker(), ""));
+			msg.setGroupId("");
 		}
 
 		msg.setText(Objects.toString(data.getText(), ""));
 		msg.setRaw(Objects.toString(data.getRaw(), ""));
 		msg.setId(Objects.toString(data.getMsgSvrID(), ""));
-
-		if (data.isGroup()) {
-			msg.setGroupId(Objects.toString(data.getStrTalker(), ""));
-		} else {
-			msg.setGroupId("");
-		}
-
 		msg.setAtUserIds(List.of());
 		msg.setAtBot(false);
 		msg.setAdmin(Objects.equals(msg.getUserId(), wxbotConfig.getAdminWxid()));
