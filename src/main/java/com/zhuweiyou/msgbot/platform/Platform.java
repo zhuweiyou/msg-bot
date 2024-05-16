@@ -12,9 +12,15 @@ public interface Platform {
 
 	void sendGroupText(String groupId, String text, List<String> atUserIds);
 
+	void sendGroupImage(String groupId, String image);
+
 	void sendPrivateText(String userId, String text);
 
+	void sendPrivateImage(String userId, String image);
+
 	void replyText(Msg msg, String text);
+
+	void replyImage(Msg msg, String image);
 
 	Optional<User> getUser(String userId);
 

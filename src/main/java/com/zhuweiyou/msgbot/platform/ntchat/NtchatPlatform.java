@@ -159,6 +159,38 @@ public class NtchatPlatform implements Platform {
 	}
 
 	@Override
+	public void sendGroupImage(String groupId, String image) {
+		// ntchat 群里发图 和 私聊发图 是一样的
+		sendPrivateImage(groupId, image);
+	}
+
+	@Override
+	public void sendPrivateImage(String userId, String image) {
+		if (Strings.isBlank(image)) {
+			return;
+		}
+
+		NtchatRequestWithImage request;
+		if (image.toLowerCase().contains(".gif")) {
+			request = new NtchatSendGifRequest();
+		} else {
+			request = new NtchatSendImageRequest();
+		}
+		request.setTo_wxid(userId);
+		request.setImage(image);
+		ntchatClient.sendRequest(request);
+	}
+
+	@Override
+	public void replyImage(Msg msg, String image) {
+		if (Strings.isBlank(msg.getGroupId())) {
+			sendPrivateImage(msg.getUserId(), image);
+		} else {
+			sendGroupImage(msg.getGroupId(), image);
+		}
+	}
+
+	@Override
 	public void replyText(Msg msg, String text) {
 		if (Strings.isBlank(text)) {
 			return;
