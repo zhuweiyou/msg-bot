@@ -1,9 +1,11 @@
 package com.zhuweiyou.msgbot.platform.wxbot;
 
+import com.zhuweiyou.msgbot.common.StringUtil;
 import com.zhuweiyou.msgbot.platform.Group;
 import com.zhuweiyou.msgbot.platform.Msg;
 import com.zhuweiyou.msgbot.platform.Platform;
 import com.zhuweiyou.msgbot.platform.User;
+import com.zhuweiyou.msgbot.platform.ntchat.NtchatWebhookBody;
 import com.zhuweiyou.msgbot.platform.wxbot.client.*;
 import com.zhuweiyou.msgbot.sensitiveword.SensitiveWord;
 import com.zhuweiyou.msgbot.store.MemoryStore;
@@ -12,9 +14,11 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -31,6 +35,69 @@ public class WxbotPlatform implements Platform {
 		this.wxbotConfig = wxbotConfig;
 		this.sensitiveWord = sensitiveWord;
 		this.wxbotClient = new WxbotClient(wxbotConfig.getApiUrl());
+	}
+
+	public Optional<Msg> parseBody(WxbotWebhookBody body) {
+		Msg msg = new Msg();
+//
+//		WxbotWebhookBody.Data data = body.getMessage().getData();
+//		msg.setUserId(Objects.toString(data.getFrom_wxid(), ""));
+//		msg.setText(Objects.toString(data.getMsg(), ""));
+//		msg.setRaw(Objects.toString(data.getRaw_msg(), ""));
+//		msg.setId(Objects.toString(data.getMsgid(), ""));
+//		msg.setGroupId(Objects.toString(data.getRoom_wxid(), ""));
+//		msg.setAtUserIds(Optional.ofNullable(data.getAt_user_list()).orElse(List.of()));
+//		msg.setAtBot(msg.getAtUserIds().stream().anyMatch(userId -> Objects.equals(ntchatConfig.getBotWxid(), userId)));
+//		msg.setAdmin(Objects.equals(data.getFrom_wxid(), ntchatConfig.getAdminWxid()));
+//
+//		// 机器人发出的消息
+//		if (Objects.equals(ntchatConfig.getBotWxid(), msg.getUserId())) {
+//			return Optional.empty();
+//		}
+//
+//		// 机器人引用他人的消息
+//		String fromusername = StringUtil.getMiddle(msg.getRaw(), "<fromusername>", "</fromusername>");
+//		if (Objects.equals(ntchatConfig.getBotWxid(), fromusername)) {
+//			return Optional.empty();
+//		}
+//
+//		// text 和 raw 都是空的
+//		if (Strings.isBlank(msg.getText()) && Strings.isBlank(msg.getRaw())) {
+//			return Optional.empty();
+//		}
+//
+//		store.save(msg);
+//
+//		// 让引用消息(包括引用卡片) 也能响应
+//		if (Strings.isBlank(msg.getText()) && Strings.isNotBlank(msg.getRaw())) {
+//			Msg originMsg = new Msg();
+//			String replyId = StringUtil.getMiddle(msg.getRaw(), "<svrid>", "</svrid>").trim();
+//			String replyMsg = StringUtil.getMiddle(msg.getRaw(), "<title>", "</title>").trim();
+//			if (Strings.isNotBlank(replyId)) {
+//				Optional<Msg> optionalMsg = store.find(replyId);
+//				if (optionalMsg.isPresent()) {
+//					originMsg = optionalMsg.get();
+//				}
+//			}
+//			String originText = originMsg.getText();
+//			if (Strings.isBlank(originText)) {
+//				originText = HtmlUtils
+//					.htmlUnescape(StringUtil.getMiddle(msg.getRaw(), "&lt;title&gt;", "&lt;/title&gt;"))
+//					.trim();
+//			}
+//			if (Strings.isBlank(originText)) {
+//				originText = HtmlUtils
+//					.htmlUnescape(StringUtil.getMiddle(msg.getRaw(), "&lt;url&gt;", "&lt;/url&gt;"))
+//					.trim();
+//			}
+//			if (Strings.isNotBlank(originText)) {
+//				originMsg.setText(String.format("%s %s", replyMsg, originText));
+//				originMsg.setRaw(msg.getRaw());
+//				msg = originMsg;
+//			}
+//		}
+
+		return Optional.of(msg);
 	}
 
 	@Override
@@ -149,6 +216,7 @@ public class WxbotPlatform implements Platform {
 		group.setName(optionalGroup.get().getName());
 		group.setAvatar(optionalGroup.get().getAvatar());
 
+
 //		response.getData()
 //		group.setUsers();
 
@@ -156,11 +224,28 @@ public class WxbotPlatform implements Platform {
 	}
 
 	@Override
+	@Cacheable(value = "WxbotPlatform.getUserName", key = "#userId + #groupId")
 	public String getUserName(String userId, String groupId) {
-		Optional<User> optionalUser = getUser(userId);
-		if (optionalUser.isEmpty()) {
-			return userId;
+		String displayName = null;
+		if (Strings.isNotBlank(groupId)) {
+			Optional<Group> optionalGroup = getGroup(groupId);
+			if (optionalGroup.isPresent()) {
+				Optional<User> optionalUser = optionalGroup.get().getUsers().stream()
+					.filter(user -> Objects.equals(userId, user.getId())).findFirst();
+				if (optionalUser.isPresent()) {
+					displayName = optionalUser.get().getName();
+				}
+			}
 		}
-		return optionalUser.get().getName();
+		if (Strings.isBlank(displayName)) {
+			Optional<User> optionalUser = getUser(userId);
+			if (optionalUser.isPresent()) {
+				displayName = optionalUser.get().getName();
+			}
+		}
+		if (Strings.isBlank(displayName)) {
+			displayName = userId;
+		}
+		return displayName;
 	}
 }
