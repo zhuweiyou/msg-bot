@@ -7,7 +7,7 @@ platform:
     bot-wxid:
     admin-wxid:
     guid:
-    api-url: http://localhost:8000
+    api-url: http://127.0.0.1:8000
 
 plugin:
   translator:
