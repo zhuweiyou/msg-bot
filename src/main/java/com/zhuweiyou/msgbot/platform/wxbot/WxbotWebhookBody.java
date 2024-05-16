@@ -27,7 +27,7 @@ public class WxbotWebhookBody {
 			if (Strings.isBlank(Sender)) {
 				return false;
 			}
-			return Sender.startsWith("<msgsource>");
+			return Sender.startsWith("<msgsource>") || Sender.length() >= 32;
 		}
 
 		public boolean isXmlContent() {

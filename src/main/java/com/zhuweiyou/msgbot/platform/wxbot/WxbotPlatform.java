@@ -1,5 +1,6 @@
 package com.zhuweiyou.msgbot.platform.wxbot;
 
+import com.zhuweiyou.msgbot.common.ImageUtil;
 import com.zhuweiyou.msgbot.common.StringUtil;
 import com.zhuweiyou.msgbot.platform.Group;
 import com.zhuweiyou.msgbot.platform.Msg;
@@ -16,6 +17,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 
+import java.net.URI;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -160,14 +163,23 @@ public class WxbotPlatform implements Platform {
 		if (Strings.isBlank(image)) {
 			return;
 		}
+
 		WxbotSendImgMsgRequest request = new WxbotSendImgMsgRequest();
 		request.setWxid(groupId);
-		if (IMAGE_PATH_PATTERN.matcher(image).find()) {
-			request.setPath(image);
+		if (image.toLowerCase().startsWith("http")) {
+			Optional<String> optionalString = ImageUtil.encodeImageToBase64(image);
+			if (optionalString.isEmpty()) {
+				return;
+			}
+
+			request.setImage(optionalString.get());
 		} else {
-			request.setImage(image);
+			if (IMAGE_PATH_PATTERN.matcher(image).find()) {
+				request.setPath(image);
+			} else {
+				request.setImage(image);
+			}
 		}
-		request.setImage(image);
 		wxbotClient.sendRequest(request);
 	}
 
