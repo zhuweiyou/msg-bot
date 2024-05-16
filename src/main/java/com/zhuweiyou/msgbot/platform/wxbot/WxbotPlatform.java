@@ -51,15 +51,10 @@ public class WxbotPlatform implements Platform {
 			msg.setUserId(Objects.toString(data.getStrTalker(), ""));
 		}
 
-		if (Strings.isBlank(data.getStrContent())) {
-			msg.setText("");
-			msg.setRaw(Objects.toString(data.getContent(), ""));
-		} else {
-			msg.setText(Objects.toString(data.getStrContent(), ""));
-			msg.setRaw("");
-		}
-
+		msg.setText(Objects.toString(data.getText(), ""));
+		msg.setRaw(Objects.toString(data.getRaw(), ""));
 		msg.setId(Objects.toString(data.getMsgSvrID(), ""));
+
 		if (data.isGroup()) {
 			msg.setGroupId(Objects.toString(data.getStrTalker(), ""));
 		} else {
@@ -69,11 +64,6 @@ public class WxbotPlatform implements Platform {
 		msg.setAtUserIds(List.of());
 		msg.setAtBot(false);
 		msg.setAdmin(Objects.equals(msg.getUserId(), wxbotConfig.getAdminWxid()));
-
-		// 调试阶段 只响应这个群
-		if (!Objects.equals(msg.getGroupId(), "49610278360@chatroom")) {
-			return Optional.empty();
-		}
 
 		// 机器人发出的消息
 		if (Objects.equals(wxbotConfig.getBotWxid(), msg.getUserId())) {

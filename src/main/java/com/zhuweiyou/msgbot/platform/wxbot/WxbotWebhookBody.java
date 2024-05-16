@@ -14,8 +14,10 @@ public class WxbotWebhookBody {
 	public static class Data {
 		@JsonProperty("MsgSvrID")
 		private String MsgSvrID;
+		// 文本 / 图片 / 其它
 		@JsonProperty("StrContent")
 		private String StrContent;
+		// 引用 / 订阅
 		@JsonProperty("Content")
 		private String Content;
 		// 群ID 或 用户ID
@@ -24,6 +26,29 @@ public class WxbotWebhookBody {
 		// 当是群聊的时候 才会有这个用户ID
 		@JsonProperty("Sender")
 		private String Sender;
+
+		public String getText() {
+			if (Strings.isNotBlank(getRaw())) {
+				return "";
+			}
+			if (Strings.isNotBlank(StrContent)) {
+				return StrContent;
+			}
+			return Content;
+		}
+
+		public String getRaw() {
+			if (Strings.isNotBlank(Content)) {
+				return Content;
+			}
+			if (Strings.isBlank(StrContent)) {
+				return "";
+			}
+			if (StrContent.startsWith("<?xml version=\"1.0\"?>")) {
+				return StrContent;
+			}
+			return "";
+		}
 
 		public boolean isSelf() {
 			if (Strings.isBlank(Sender)) {
