@@ -7,7 +7,6 @@ import com.zhuweiyou.msgbot.platform.Msg;
 import com.zhuweiyou.msgbot.platform.Platform;
 import com.zhuweiyou.msgbot.platform.User;
 import com.zhuweiyou.msgbot.platform.wxbot.client.*;
-import com.zhuweiyou.msgbot.sensitiveword.SensitiveWord;
 import com.zhuweiyou.msgbot.store.MemoryStore;
 import com.zhuweiyou.msgbot.store.Store;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 
-import java.net.URI;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -27,14 +24,12 @@ import java.util.regex.Pattern;
 public class WxbotPlatform implements Platform {
 	private final WxbotConfig wxbotConfig;
 	private final Store store = new MemoryStore();
-	private final SensitiveWord sensitiveWord;
 	private final WxbotClient wxbotClient;
 	private final static Pattern IMAGE_PATH_PATTERN = Pattern.compile("\\.(gif|png|je?pg)", Pattern.CASE_INSENSITIVE);
 
 	@Autowired
-	public WxbotPlatform(WxbotConfig wxbotConfig, SensitiveWord sensitiveWord) {
+	public WxbotPlatform(WxbotConfig wxbotConfig) {
 		this.wxbotConfig = wxbotConfig;
-		this.sensitiveWord = sensitiveWord;
 		this.wxbotClient = new WxbotClient(wxbotConfig.getApiUrl());
 	}
 
@@ -56,9 +51,9 @@ public class WxbotPlatform implements Platform {
 			msg.setUserId(Objects.toString(data.getStrTalker(), ""));
 		}
 
-		if (data.isXmlContent()) {
+		if (Strings.isBlank(data.getStrContent())) {
 			msg.setText("");
-			msg.setRaw(Objects.toString(data.getStrContent(), ""));
+			msg.setRaw(Objects.toString(data.getContent(), ""));
 		} else {
 			msg.setText(Objects.toString(data.getStrContent(), ""));
 			msg.setRaw("");
@@ -152,11 +147,10 @@ public class WxbotPlatform implements Platform {
 		}
 		WxbotSendTxtMsgRequest request = new WxbotSendTxtMsgRequest();
 		request.setWxid(groupId);
-		request.setContent(sensitiveWord.replace(text));
+		request.setContent(text);
 		request.setAtlist(atUserIds);
 		wxbotClient.sendRequest(request);
 	}
-
 
 	@Override
 	public void sendGroupImage(String groupId, String image) {

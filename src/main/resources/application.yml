@@ -36,9 +36,3 @@ cron:
     chuangge-wxid-list:
       - wxid1
       - wxid2
-
-sensitiveword:
-  deny-list:
-    - 敏感词1
-    - 敏感词2
-  allow-list:

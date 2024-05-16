@@ -65,11 +65,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.houbb</groupId>
-			<artifactId>sensitive-word</artifactId>
-			<version>0.13.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.houbb</groupId>
 			<artifactId>pinyin</artifactId>
 			<version>0.4.0</version>
 		</dependency>

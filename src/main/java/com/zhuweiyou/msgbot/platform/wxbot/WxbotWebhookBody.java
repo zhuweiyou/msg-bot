@@ -16,6 +16,8 @@ public class WxbotWebhookBody {
 		private String MsgSvrID;
 		@JsonProperty("StrContent")
 		private String StrContent;
+		@JsonProperty("Content")
+		private String Content;
 		// 群ID 或 用户ID
 		@JsonProperty("StrTalker")
 		private String StrTalker;
@@ -28,13 +30,6 @@ public class WxbotWebhookBody {
 				return false;
 			}
 			return Sender.startsWith("<msgsource>") || Sender.length() >= 32;
-		}
-
-		public boolean isXmlContent() {
-			if (Strings.isBlank(StrContent)) {
-				return false;
-			}
-			return StrContent.startsWith("<?xml version=\"1.0\"?>");
 		}
 
 		public boolean isGroup() {
