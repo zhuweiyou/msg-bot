@@ -25,7 +25,21 @@ docker run -d \
 
 部署看这里 [jwping/wxbot](https://github.com/jwping/wxbot)
 
-设置回调地址 `http://localhost:8080/wxbot/webhook` (wxbot.json 中的 `sync-url.general-msg.url`)
+#### wxbot.json
+
+```json
+{
+	"addr": "0.0.0.0:18080",
+	"sync-url": {
+		"general-msg": [
+			{
+				"timeout": 3000,
+				"url": "http://localhost:8080/wxbot/webhook"
+			}
+		]
+	}
+}
+```
 
 ### ntchat 微信(v3.6.0.18)机器人
 
