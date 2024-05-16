@@ -9,7 +9,7 @@ platform:
     guid:
     api-url: http://127.0.0.1:8000
   wxbot:
-    bot-wxid:
+    bot-wxid: wxid_u3678r4hvlok12
     admin-wxid:
     api-url: http://127.0.0.1:18080
 

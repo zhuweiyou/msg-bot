@@ -30,22 +30,22 @@ public class WxbotController {
 	}
 
 	@PostMapping("/webhook")
-	public String webhook(@RequestBody Map<String, Object> body) {
+	public String webhook(@RequestBody WxbotWebhookBody body) {
 		log.info("WxbotController.webhook {}", body);
 
-//		wxbotPlatform.parseBody(body).ifPresent(msg -> {
-//			boolean matched = false;
-//			for (Plugin plugin : pluginSet) {
-//				if (plugin.match(msg)) {
-//					matched = true;
-//					CompletableFuture.runAsync(() -> plugin.execute(msg, wxbotPlatform));
-//				}
-//			}
-//			// 插件都没匹配上, 私聊默认用GPT回复
-//			if (!matched && Strings.isBlank(msg.getGroupId())) {
-//				CompletableFuture.runAsync(() -> gptPlugin.execute(msg, wxbotPlatform));
-//			}
-//		});
+		wxbotPlatform.parseBody(body).ifPresent(msg -> {
+			boolean matched = false;
+			for (Plugin plugin : pluginSet) {
+				if (plugin.match(msg)) {
+					matched = true;
+					CompletableFuture.runAsync(() -> plugin.execute(msg, wxbotPlatform));
+				}
+			}
+			// 插件都没匹配上, 私聊默认用GPT回复
+			if (!matched && Strings.isBlank(msg.getGroupId())) {
+				CompletableFuture.runAsync(() -> gptPlugin.execute(msg, wxbotPlatform));
+			}
+		});
 
 		return "received";
 	}

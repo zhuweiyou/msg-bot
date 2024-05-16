@@ -5,12 +5,13 @@ import com.zhuweiyou.msgbot.platform.Group;
 import com.zhuweiyou.msgbot.platform.Msg;
 import com.zhuweiyou.msgbot.platform.Platform;
 import com.zhuweiyou.msgbot.platform.User;
-import com.zhuweiyou.msgbot.platform.ntchat.NtchatWebhookBody;
 import com.zhuweiyou.msgbot.platform.wxbot.client.*;
 import com.zhuweiyou.msgbot.sensitiveword.SensitiveWord;
 import com.zhuweiyou.msgbot.store.MemoryStore;
 import com.zhuweiyou.msgbot.store.Store;
 import org.apache.logging.log4j.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
 
 @Component
 public class WxbotPlatform implements Platform {
+	private static final Logger log = LoggerFactory.getLogger(WxbotPlatform.class);
 	private final WxbotConfig wxbotConfig;
 	private final Store store = new MemoryStore();
 	private final SensitiveWord sensitiveWord;
@@ -39,63 +41,93 @@ public class WxbotPlatform implements Platform {
 
 	public Optional<Msg> parseBody(WxbotWebhookBody body) {
 		Msg msg = new Msg();
-//
-//		WxbotWebhookBody.Data data = body.getMessage().getData();
-//		msg.setUserId(Objects.toString(data.getFrom_wxid(), ""));
-//		msg.setText(Objects.toString(data.getMsg(), ""));
-//		msg.setRaw(Objects.toString(data.getRaw_msg(), ""));
-//		msg.setId(Objects.toString(data.getMsgid(), ""));
-//		msg.setGroupId(Objects.toString(data.getRoom_wxid(), ""));
-//		msg.setAtUserIds(Optional.ofNullable(data.getAt_user_list()).orElse(List.of()));
-//		msg.setAtBot(msg.getAtUserIds().stream().anyMatch(userId -> Objects.equals(ntchatConfig.getBotWxid(), userId)));
-//		msg.setAdmin(Objects.equals(data.getFrom_wxid(), ntchatConfig.getAdminWxid()));
-//
-//		// 机器人发出的消息
-//		if (Objects.equals(ntchatConfig.getBotWxid(), msg.getUserId())) {
-//			return Optional.empty();
-//		}
-//
-//		// 机器人引用他人的消息
-//		String fromusername = StringUtil.getMiddle(msg.getRaw(), "<fromusername>", "</fromusername>");
-//		if (Objects.equals(ntchatConfig.getBotWxid(), fromusername)) {
-//			return Optional.empty();
-//		}
-//
-//		// text 和 raw 都是空的
-//		if (Strings.isBlank(msg.getText()) && Strings.isBlank(msg.getRaw())) {
-//			return Optional.empty();
-//		}
-//
-//		store.save(msg);
-//
-//		// 让引用消息(包括引用卡片) 也能响应
-//		if (Strings.isBlank(msg.getText()) && Strings.isNotBlank(msg.getRaw())) {
-//			Msg originMsg = new Msg();
-//			String replyId = StringUtil.getMiddle(msg.getRaw(), "<svrid>", "</svrid>").trim();
-//			String replyMsg = StringUtil.getMiddle(msg.getRaw(), "<title>", "</title>").trim();
-//			if (Strings.isNotBlank(replyId)) {
-//				Optional<Msg> optionalMsg = store.find(replyId);
-//				if (optionalMsg.isPresent()) {
-//					originMsg = optionalMsg.get();
-//				}
-//			}
-//			String originText = originMsg.getText();
-//			if (Strings.isBlank(originText)) {
-//				originText = HtmlUtils
-//					.htmlUnescape(StringUtil.getMiddle(msg.getRaw(), "&lt;title&gt;", "&lt;/title&gt;"))
-//					.trim();
-//			}
-//			if (Strings.isBlank(originText)) {
-//				originText = HtmlUtils
-//					.htmlUnescape(StringUtil.getMiddle(msg.getRaw(), "&lt;url&gt;", "&lt;/url&gt;"))
-//					.trim();
-//			}
-//			if (Strings.isNotBlank(originText)) {
-//				originMsg.setText(String.format("%s %s", replyMsg, originText));
-//				originMsg.setRaw(msg.getRaw());
-//				msg = originMsg;
-//			}
-//		}
+
+		WxbotWebhookBody.Data data = body.getData().getFirst();
+		if (data == null) {
+			return Optional.empty();
+		}
+
+		if (data.isGroup()) {
+			if (data.isSelf()) {
+				msg.setUserId(wxbotConfig.getBotWxid());
+			} else {
+				msg.setUserId(Objects.toString(data.getSender(), ""));
+			}
+		} else {
+			msg.setUserId(Objects.toString(data.getStrTalker(), ""));
+		}
+
+		if (data.isXmlContent()) {
+			msg.setText("");
+			msg.setRaw(Objects.toString(data.getStrContent(), ""));
+		} else {
+			msg.setText(Objects.toString(data.getStrContent(), ""));
+			msg.setRaw("");
+		}
+
+		msg.setId(Objects.toString(data.getMsgSvrID(), ""));
+		if (data.isGroup()) {
+			msg.setGroupId(Objects.toString(data.getStrTalker(), ""));
+		} else {
+			msg.setGroupId("");
+		}
+
+		msg.setAtUserIds(List.of());
+		msg.setAtBot(false);
+		msg.setAdmin(Objects.equals(msg.getUserId(), wxbotConfig.getAdminWxid()));
+
+		// 调试阶段 只响应这个群
+		if (!Objects.equals(msg.getGroupId(), "49610278360@chatroom")) {
+			return Optional.empty();
+		}
+
+		// 机器人发出的消息
+		if (Objects.equals(wxbotConfig.getBotWxid(), msg.getUserId())) {
+			return Optional.empty();
+		}
+
+		// 机器人引用他人的消息
+		String fromusername = StringUtil.getMiddle(msg.getRaw(), "<fromusername>", "</fromusername>");
+		if (Objects.equals(wxbotConfig.getBotWxid(), fromusername)) {
+			log.info("ms3 {}", msg);
+			return Optional.empty();
+		}
+
+		// text 和 raw 都是空的
+		if (Strings.isBlank(msg.getText()) && Strings.isBlank(msg.getRaw())) {
+			return Optional.empty();
+		}
+
+		store.save(msg);
+
+		// 让引用消息(包括引用卡片) 也能响应
+		if (Strings.isBlank(msg.getText()) && Strings.isNotBlank(msg.getRaw())) {
+			Msg originMsg = new Msg();
+			String replyId = StringUtil.getMiddle(msg.getRaw(), "<svrid>", "</svrid>").trim();
+			String replyMsg = StringUtil.getMiddle(msg.getRaw(), "<title>", "</title>").trim();
+			if (Strings.isNotBlank(replyId)) {
+				Optional<Msg> optionalMsg = store.find(replyId);
+				if (optionalMsg.isPresent()) {
+					originMsg = optionalMsg.get();
+				}
+			}
+			String originText = originMsg.getText();
+			if (Strings.isBlank(originText)) {
+				originText = HtmlUtils
+					.htmlUnescape(StringUtil.getMiddle(msg.getRaw(), "&lt;title&gt;", "&lt;/title&gt;"))
+					.trim();
+			}
+			if (Strings.isBlank(originText)) {
+				originText = HtmlUtils
+					.htmlUnescape(StringUtil.getMiddle(msg.getRaw(), "&lt;url&gt;", "&lt;/url&gt;"))
+					.trim();
+			}
+			if (Strings.isNotBlank(originText)) {
+				originMsg.setText(String.format("%s %s", replyMsg, originText));
+				originMsg.setRaw(msg.getRaw());
+				msg = originMsg;
+			}
+		}
 
 		return Optional.of(msg);
 	}
