@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +19,9 @@ public class WxbotAccountByWxidRequest implements WxbotRequest {
 
 	@Override
 	public String path() {
-		return "/api/account-by-wxid";
+		return UriComponentsBuilder.fromPath("/api/account-by-wxid")
+			.queryParam("wxid", wxid)
+			.build()
+			.toString();
 	}
 }

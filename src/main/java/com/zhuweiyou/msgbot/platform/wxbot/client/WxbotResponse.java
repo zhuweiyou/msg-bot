@@ -18,6 +18,6 @@ public class WxbotResponse {
 	private Map<String, Object> data = new HashMap<>();
 
 	public boolean isSuccess() {
-		return code == 200;
+		return code == 200 && data != null;
 	}
 }

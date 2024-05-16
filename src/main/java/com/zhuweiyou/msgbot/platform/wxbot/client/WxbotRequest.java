@@ -4,5 +4,6 @@ import org.springframework.http.HttpMethod;
 
 public interface WxbotRequest {
 	HttpMethod method();
+
 	String path();
 }

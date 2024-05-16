@@ -9,23 +9,19 @@ import com.zhuweiyou.msgbot.platform.wxbot.client.*;
 import com.zhuweiyou.msgbot.sensitiveword.SensitiveWord;
 import com.zhuweiyou.msgbot.store.MemoryStore;
 import com.zhuweiyou.msgbot.store.Store;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Component
 public class WxbotPlatform implements Platform {
-	private static final Logger log = LoggerFactory.getLogger(WxbotPlatform.class);
 	private final WxbotConfig wxbotConfig;
 	private final Store store = new MemoryStore();
 	private final SensitiveWord sensitiveWord;
@@ -89,7 +85,6 @@ public class WxbotPlatform implements Platform {
 		// 机器人引用他人的消息
 		String fromusername = StringUtil.getMiddle(msg.getRaw(), "<fromusername>", "</fromusername>");
 		if (Objects.equals(wxbotConfig.getBotWxid(), fromusername)) {
-			log.info("ms3 {}", msg);
 			return Optional.empty();
 		}
 
@@ -223,8 +218,8 @@ public class WxbotPlatform implements Platform {
 		Map<String, Object> data = response.getData();
 		User user = new User();
 		user.setId(userId);
-		user.setName(data.get("nickname").toString());
-		user.setAvatar(data.get("profilePicture").toString());
+		user.setName(Objects.toString(data.get("nickname"), ""));
+		user.setAvatar(Objects.toString(data.get("profilePicture"), ""));
 		return Optional.of(user);
 	}
 
@@ -248,11 +243,18 @@ public class WxbotPlatform implements Platform {
 		group.setName(optionalGroup.get().getName());
 		group.setAvatar(optionalGroup.get().getAvatar());
 
-
-//		response.getData()
-//		group.setUsers();
-
-		return Optional.empty();
+		Map<String, Object> data = response.getData();
+		List<User> users = new ArrayList<>();
+		for (String key : data.keySet()) {
+			Map<String, Object> item = (Map<String, Object>) data.get(key);
+			User user = new User();
+			user.setId(key);
+			user.setName(Objects.toString(item.get("nickname"), ""));
+			user.setAvatar(Objects.toString(item.get("profilePicture"), ""));
+			users.add(user);
+		}
+		group.setUsers(users);
+		return Optional.of(group);
 	}
 
 	@Override

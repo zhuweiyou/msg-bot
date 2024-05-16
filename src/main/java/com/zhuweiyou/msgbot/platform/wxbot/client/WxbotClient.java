@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -18,13 +19,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpMethod;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
+@Slf4j
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,13 +34,7 @@ public class WxbotClient {
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 			HttpUriRequest httpUriRequest;
 			if (request.method() == HttpMethod.GET) {
-				ObjectMapper objectMapper = new ObjectMapper();
-				objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-				URI uri = UriComponentsBuilder.newInstance()
-					.uri(new URIBuilder(baseUrl + request.path()).build())
-					.queryParams((MultiValueMap<String, String>) objectMapper.convertValue(request, Map.class))
-					.build()
-					.toUri();
+				URI uri = new URIBuilder(baseUrl + request.path()).build();
 				httpUriRequest = new HttpGet(uri);
 			} else if (request.method() == HttpMethod.POST) {
 				HttpPost httpPost = new HttpPost(baseUrl + request.path());
