@@ -23,6 +23,7 @@ docker run -d \
 
 ### ntchat 微信机器人
 
-在 linux amd64 跑 [zhuweiyou/ntchat-api](https://github.com/zhuweiyou/ntchat-api)
+- 部署到 windows 看这里 [zhuweiyou/ntchat-0.1.13](https://github.com/zhuweiyou/ntchat-0.1.13)
+- 部署到 linux 看这里 [zhuweiyou/ntchat-api](https://github.com/zhuweiyou/ntchat-api)
 
 设置回调地址 `http://localhost:8080/ntchat/webhook`
