@@ -10,7 +10,7 @@ JDK 21
 
 ## 一键运行
 
-不需要下载项目, 单独下载 `src/main/resources/application.yml` 填好配置放到当前目录 `./application.yml`
+不需要下载整个项目, 单独下载 [application.yml](src/main/resources/application.yml) 填好配置放到当前目录 `./application.yml`
 
 ```bash
 docker run -d \
