@@ -14,19 +14,13 @@ public interface Platform {
 
 	void sendGroupImage(String groupId, String urlOrFilePath);
 
-	void sendGroupGif(String groupId, String urlOrFilePath);
-
 	void sendPrivateText(String userId, String text);
 
 	void sendPrivateImage(String userId, String urlOrFilePath);
 
-	void sendPrivateGif(String userId, String urlOrFilePath);
-
 	void replyText(Msg msg, String text);
 
 	void replyImage(Msg msg, String urlOrFilePath);
-
-	void replyGif(Msg msg, String urlOrFilePath);
 
 	Optional<User> getUser(String userId);
 

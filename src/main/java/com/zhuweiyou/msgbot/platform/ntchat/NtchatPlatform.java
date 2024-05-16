@@ -150,22 +150,6 @@ public class NtchatPlatform implements Platform {
 	}
 
 	@Override
-	public void sendGroupImage(String groupId, String urlOrFilePath) {
-		NtchatSendImageRequest request = new NtchatSendImageRequest();
-		request.setTo_wxid(groupId);
-		request.setImage(urlOrFilePath);
-		ntchatClient.sendRequest(request);
-	}
-
-	@Override
-	public void sendGroupGif(String groupId, String urlOrFilePath) {
-		NtchatSendGifRequest request = new NtchatSendGifRequest();
-		request.setTo_wxid(groupId);
-		request.setImage(urlOrFilePath);
-		ntchatClient.sendRequest(request);
-	}
-
-	@Override
 	public void sendPrivateText(String userId, String text) {
 		if (Strings.isBlank(text)) {
 			return;
@@ -175,19 +159,31 @@ public class NtchatPlatform implements Platform {
 	}
 
 	@Override
+	public void sendGroupImage(String groupId, String urlOrFilePath) {
+		// ntchat 群里发图 和 私聊发图 是一样的
+		sendPrivateImage(groupId, urlOrFilePath);
+	}
+
+	@Override
 	public void sendPrivateImage(String userId, String urlOrFilePath) {
-		NtchatSendImageRequest request = new NtchatSendImageRequest();
+		NtchatRequestWithImage request;
+		if (urlOrFilePath.toLowerCase().contains(".gif")) {
+			request = new NtchatSendGifRequest();
+		} else {
+			request = new NtchatSendImageRequest();
+		}
 		request.setTo_wxid(userId);
 		request.setImage(urlOrFilePath);
 		ntchatClient.sendRequest(request);
 	}
 
 	@Override
-	public void sendPrivateGif(String userId, String urlOrFilePath) {
-		NtchatSendGifRequest request = new NtchatSendGifRequest();
-		request.setTo_wxid(userId);
-		request.setImage(urlOrFilePath);
-		ntchatClient.sendRequest(request);
+	public void replyImage(Msg msg, String urlOrFilePath) {
+		if (Strings.isBlank(msg.getGroupId())) {
+			sendPrivateImage(msg.getUserId(), urlOrFilePath);
+		} else {
+			sendGroupImage(msg.getGroupId(), urlOrFilePath);
+		}
 	}
 
 	@Override
@@ -210,24 +206,6 @@ public class NtchatPlatform implements Platform {
 		request.setFrom_id(msg.getId());
 		request.setFrom_msg(msg.getText());
 		ntchatClient.sendRequest(request);
-	}
-
-	@Override
-	public void replyImage(Msg msg, String urlOrFilePath) {
-		if (Strings.isBlank(msg.getGroupId())) {
-			sendPrivateImage(msg.getUserId(), urlOrFilePath);
-		} else {
-			sendGroupImage(msg.getGroupId(), urlOrFilePath);
-		}
-	}
-
-	@Override
-	public void replyGif(Msg msg, String urlOrFilePath) {
-		if (Strings.isBlank(msg.getGroupId())) {
-			sendPrivateGif(msg.getUserId(), urlOrFilePath);
-		} else {
-			sendGroupGif(msg.getGroupId(), urlOrFilePath);
-		}
 	}
 
 	@Override
