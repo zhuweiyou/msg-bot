@@ -20,7 +20,7 @@ plugin:
         - key1
         - key2
   keywordreminder:
-    keyword-regex: "a|b|c"
+    keyword-regex: "这个关键词会提醒|helloworld"
 
 cron:
   weibo:
