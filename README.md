@@ -19,6 +19,10 @@ docker run -d \
   zhuweiyou/msg-bot:latest
 ```
 
-## 回调地址
+## 对接平台
 
-- ntchat: `http://localhost:8080/ntchat/webhook`
+### ntchat 微信机器人
+
+在 linux amd64 跑 [zhuweiyou/ntchat-api](https://github.com/zhuweiyou/ntchat-api)
+
+设置回调地址 `http://localhost:8080/ntchat/webhook`
