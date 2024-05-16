@@ -31,6 +31,6 @@ public class WxbotSendTxtMsgRequest implements WxbotRequest {
 		if (atlist.isEmpty()) {
 			return content;
 		}
-		return atlist.stream().map(wxid -> "@" + wxid + " ").collect(Collectors.joining()) + "\n" + content;
+		return atlist.stream().map(wxid -> "@" + wxid + " ").collect(Collectors.joining()) + "\n\n" + content;
 	}
 }

@@ -189,7 +189,7 @@ public class WxbotPlatform implements Platform {
 		if (Strings.isBlank(msg.getGroupId())) {
 			sendPrivateText(msg.getUserId(), text);
 		} else {
-			sendGroupText(msg.getGroupId(), text);
+			sendGroupText(msg.getGroupId(), text, List.of(msg.getUserId()));
 		}
 	}
 
