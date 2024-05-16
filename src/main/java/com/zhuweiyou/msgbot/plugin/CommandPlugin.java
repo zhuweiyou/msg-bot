@@ -1,0 +1,36 @@
+package com.zhuweiyou.msgbot.plugin;
+
+import com.zhuweiyou.msgbot.platform.Msg;
+import com.zhuweiyou.msgbot.platform.Platform;
+import org.apache.logging.log4j.util.Strings;
+
+import java.util.Set;
+
+public abstract class CommandPlugin implements Plugin {
+	protected final Set<String> commandSet;
+	protected final boolean contentRequired;
+
+	public CommandPlugin(String... command) {
+		this.commandSet = Set.of(command);
+		this.contentRequired = false;
+	}
+
+	public CommandPlugin(boolean contentRequired, String... command) {
+		this.commandSet = Set.of(command);
+		this.contentRequired = contentRequired;
+	}
+
+	@Override
+	public boolean match(Msg msg) {
+		if (!commandSet.contains(msg.getCommand().toLowerCase())) {
+			return false;
+		}
+		if (this.contentRequired) {
+			return Strings.isNotBlank(msg.getContent());
+		}
+		return true;
+	}
+
+	@Override
+	abstract public void execute(Msg msg, Platform platform);
+}

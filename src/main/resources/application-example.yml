@@ -1,0 +1,40 @@
+app:
+  server-url:
+  bot-name: my-bot
+
+platform:
+  ntchat:
+    bot-wxid:
+    admin-wxid:
+    guid:
+    api-url:
+
+plugin:
+  translator:
+    baidu:
+      app-id:
+      app-key:
+  gpt:
+    moonshot:
+      api-key-list:
+        - key1
+        - key2
+  keywordreminder:
+    keyword-regex: "a|b|c"
+
+cron:
+  weibo:
+    ganggang-wxid-list:
+      - wxid1
+      - wxid2
+
+  bilibili:
+    chuangge-wxid-list:
+      - wxid1
+      - wxid2
+
+sensitiveword:
+  deny-list:
+    - 敏感词1
+    - 敏感词2
+  allow-list:
