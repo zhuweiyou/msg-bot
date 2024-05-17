@@ -18,7 +18,7 @@ docker build -t zhuweiyou/msg-bot:latest .
 # 运行
 docker run -d \
     -p 8080:8080 \
-    -v ./application.yml:/app/config/application.yml \
+    -v ./application.yml:/app/application.yml \
     zhuweiyou/msg-bot:latest
 ```
 
