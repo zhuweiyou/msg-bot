@@ -21,7 +21,16 @@ public class KeywordReminderPlugin implements Plugin {
 		if (Strings.isBlank(msg.getText()) || Strings.isBlank(msg.getGroupId())) {
 			return false;
 		}
-		return keywordReminderConfig.getKeywordPattern().matcher(msg.getText().replaceAll("\\s+", "")).find();
+
+		String text = msg.getText().replaceAll("\\s+", "");
+		for (String keyword: keywordReminderConfig.getKeywordList()) {
+			// 包含任意一个, 触发
+			if (text.contains(keyword)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override

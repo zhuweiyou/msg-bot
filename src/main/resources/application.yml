@@ -24,7 +24,9 @@ plugin:
         - key1
         - key2
   keywordreminder:
-    keyword-regex: "这个关键词会提醒|helloworld"
+    keyword-list:
+      - 关键词1
+      - 关键词2
 
 cron:
   weibo:
