@@ -34,15 +34,21 @@ docker run -d \
 
 ```json
 {
-    "addr": "0.0.0.0:18080",
-    "sync-url": {
-        "general-msg": [
-            {
-                "timeout": 3000,
-                "url": "http://localhost:8080/wxbot/webhook"
-            }
-        ]
-    }
+	"addr": "0.0.0.0:18080",
+	"sync-url": {
+		"qrcode": [
+			{
+				"timeout": 3000,
+				"url": "http://localhost:8080/wxbot/qrcode"
+			}
+		],
+		"general-msg": [
+			{
+				"timeout": 3000,
+				"url": "http://localhost:8080/wxbot/webhook"
+			}
+		]
+	}
 }
 ```
 
