@@ -1,6 +1,6 @@
 app:
   server-url: http://localhost:8080
-  bot-name: my-bot
+  bot-name: 阿尔法猪
 
 platform:
   ntchat:
@@ -27,6 +27,8 @@ plugin:
     keyword-list:
       - 关键词1
       - 关键词2
+      # 带有特殊符号要加引号
+      - "[猪头]"
 
 cron:
   weibo:
