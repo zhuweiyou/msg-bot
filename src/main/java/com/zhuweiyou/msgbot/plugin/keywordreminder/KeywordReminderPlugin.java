@@ -22,10 +22,10 @@ public class KeywordReminderPlugin implements Plugin {
 			return false;
 		}
 
-		String text = msg.getText().replaceAll("\\s+", "");
+		String text = msg.getText().replaceAll("\\s+", "").toLowerCase();
 		for (String keyword: keywordReminderConfig.getKeywordList()) {
 			// 包含任意一个, 触发
-			if (text.contains(keyword)) {
+			if (text.contains(keyword.toLowerCase())) {
 				return true;
 			}
 		}
