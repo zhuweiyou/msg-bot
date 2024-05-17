@@ -12,6 +12,7 @@ public class HelpPlugin extends CommandPlugin {
 	public HelpPlugin() {
 		super("h", "help", "帮助", "菜单");
 		helpText = String.join("\n",
+			"【帮助】",
 			"[C或G] 问答机器人",
 			"[CJ] 抽奖(随机1名群成员中奖)",
 			"[FY] 中英互译",
