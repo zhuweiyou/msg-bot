@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Component
@@ -25,7 +24,6 @@ public class WxbotPlatform implements Platform {
 	private final WxbotConfig wxbotConfig;
 	private final Store store = new MemoryStore();
 	private final WxbotClient wxbotClient;
-	private final static Pattern IMAGE_PATH_PATTERN = Pattern.compile("\\.(gif|png|je?pg)", Pattern.CASE_INSENSITIVE);
 
 	@Autowired
 	public WxbotPlatform(WxbotConfig wxbotConfig) {
@@ -144,18 +142,18 @@ public class WxbotPlatform implements Platform {
 
 		WxbotSendImgMsgRequest request = new WxbotSendImgMsgRequest();
 		request.setWxid(groupId);
-		if (image.toLowerCase().startsWith("http")) {
-			Optional<String> optionalString = ImageUtil.encodeImageToBase64(image);
+		if (ImageUtil.isRemote(image)) {
+			Optional<String> optionalString = ImageUtil.toBase64(image);
 			if (optionalString.isEmpty()) {
 				return;
 			}
 
 			request.setImage(optionalString.get());
 		} else {
-			if (IMAGE_PATH_PATTERN.matcher(image).find()) {
+			if (ImageUtil.hasExt(image)) {
 				request.setPath(image);
 			} else {
-				request.setImage(image);
+				request.setImage(ImageUtil.trimBase64Prefix(image));
 			}
 		}
 		wxbotClient.sendRequest(request);

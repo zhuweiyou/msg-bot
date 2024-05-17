@@ -1,5 +1,6 @@
 package com.zhuweiyou.msgbot.platform.ntchat;
 
+import com.zhuweiyou.msgbot.common.ImageUtil;
 import com.zhuweiyou.msgbot.common.StringUtil;
 import com.zhuweiyou.msgbot.platform.Group;
 import com.zhuweiyou.msgbot.platform.Msg;
@@ -8,6 +9,7 @@ import com.zhuweiyou.msgbot.platform.User;
 import com.zhuweiyou.msgbot.platform.ntchat.client.*;
 import com.zhuweiyou.msgbot.store.MemoryStore;
 import com.zhuweiyou.msgbot.store.Store;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class NtchatPlatform implements Platform {
 	private final NtchatConfig ntchatConfig;
@@ -162,6 +165,11 @@ public class NtchatPlatform implements Platform {
 	@Override
 	public void sendPrivateImage(String userId, String image) {
 		if (Strings.isBlank(image)) {
+			return;
+		}
+
+		if (!ImageUtil.isRemote(image) && !ImageUtil.hasExt(image)) {
+			log.warn("ntchat不支持这种图片格式 {}", image);
 			return;
 		}
 
