@@ -22,6 +22,8 @@ docker run -d \
     zhuweiyou/msg-bot:latest
 ```
 
+> 上面的 `:latest` 支持分支名或版本号, 比如 `:main`, `:1.0.0` 等
+
 ## 对接平台
 
 ### wxbot 微信(v3.9.8.25)机器人
