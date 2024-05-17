@@ -23,7 +23,12 @@ public class Msg {
 		if (Strings.isBlank(text)) {
 			return "";
 		}
-		return COMMAND_PATTERN.split(text.trim(), 2)[0];
+		String command = COMMAND_PATTERN.split(text.trim(), 2)[0];
+		// 兼容 / 开头的指令
+		if (command.startsWith("/")) {
+			return command.substring(1);
+		}
+		return command;
 	}
 
 	public String getContent() {
