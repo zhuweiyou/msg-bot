@@ -45,13 +45,15 @@ public class LotteryPlugin extends CommandPlugin {
 			return;
 		}
 
+		Collections.shuffle(userList);
+		String userId = userList.getFirst();
+
 		String result;
 		if (Strings.isBlank(content)) {
-			result = "恭喜中奖";
+			result = "恭喜" + userId + "中奖";
 		} else {
-			result = "恭喜中奖【" + content + "】";
+			result = "恭喜" + userId + "中奖【" + content + "】";
 		}
-		Collections.shuffle(userList);
-		platform.sendGroupText(msg.getGroupId(), result, List.of(userList.getFirst()));
+		platform.sendGroupText(msg.getGroupId(), result, List.of(userId));
 	}
 }
