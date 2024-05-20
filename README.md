@@ -6,7 +6,14 @@
 
 JDK 21
 
-## 一键运行
+## 运行
+
+```bash
+make build
+java -jar target/msg-bot-latest.jar
+```
+
+## 容器运行
 
 拷贝 [application.yml](src/main/resources/application.yml)
 填好配置放到当前目录 `./application.yml`
