@@ -52,6 +52,11 @@ public class NtchatPlatform implements Platform {
 			return Optional.empty();
 		}
 
+		// 公众号之类的消息
+		if (msg.getUserId().startsWith("gh_")) {
+			return Optional.empty();
+		}
+
 		// 机器人引用他人的消息
 		String fromusername = StringUtil.getMiddle(msg.getRaw(), "<fromusername>", "</fromusername>");
 		if (Objects.equals(ntchatConfig.getBotWxid(), fromusername)) {
