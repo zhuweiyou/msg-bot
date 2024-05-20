@@ -9,4 +9,4 @@ COPY --from=builder /app/target/*.jar /app/app.jar
 EXPOSE 8080
 ENV TZ=Asia/Shanghai
 WORKDIR /app
-CMD ["java", "-jar", "app.jar", "--spring.config.location=/app/application.yml"]
+CMD ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]
