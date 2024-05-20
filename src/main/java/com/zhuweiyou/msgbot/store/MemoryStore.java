@@ -1,6 +1,7 @@
 package com.zhuweiyou.msgbot.store;
 
 import com.zhuweiyou.msgbot.platform.Msg;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,6 +22,10 @@ public class MemoryStore implements Store {
 	}
 
 	public Optional<Msg> find(String msgId) {
-		return Optional.ofNullable(msgMap.get(msgId));
+		Msg msg = msgMap.get(msgId);
+		if (msg == null) {
+			return Optional.empty();
+		}
+		return Optional.of(SerializationUtils.clone(msg));
 	}
 }

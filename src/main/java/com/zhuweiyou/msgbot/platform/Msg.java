@@ -3,11 +3,12 @@ package com.zhuweiyou.msgbot.platform;
 import lombok.Data;
 import org.apache.logging.log4j.util.Strings;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.regex.Pattern;
 
 @Data
-public class Msg {
+public class Msg implements Serializable {
 	private String text;
 	private String raw;
 	private String id;
