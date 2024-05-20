@@ -48,12 +48,9 @@ public class LotteryPlugin extends CommandPlugin {
 		Collections.shuffle(userList);
 		String userId = userList.getFirst();
 		String userName = platform.getUserName(userId, msg.getGroupId());
-
-		String result;
-		if (Strings.isBlank(content)) {
-			result = "恭喜" + userName + "(" + userId + ")" + "中奖";
-		} else {
-			result = "恭喜" + userName + "(" + userId + ")" + "中奖【" + content + "】";
+		String result = "恭喜" + userName + "(" + userId + ")" + "中奖";
+		if (Strings.isNotBlank(content)) {
+			result += "【" + content + "】";
 		}
 		platform.sendGroupText(msg.getGroupId(), result, List.of(userId));
 	}
