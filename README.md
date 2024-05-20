@@ -8,11 +8,10 @@ JDK 21
 
 ## 一键运行
 
-```bash
-# 拷贝并填写 application-prod.yml 配置
-cp src/main/resources/application.yml src/main/resources/application-prod.yml
+修改 [src/main/resources/application.yml](src/main/resources/application.yml) 配置
 
-# 构建镜像 (如果你不修改代码 不需要这一步 可以直接使用我的远程镜像)
+```bash
+# 构建
 docker build -t zhuweiyou/msg-bot:latest .
 
 # 运行
