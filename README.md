@@ -6,27 +6,17 @@
 
 JDK 21
 
-## 运行
+## 一键运行
 
 ```bash
-make build
-java -jar target/msg-bot-latest.jar
-```
+# 拷贝并填写 application-prod.yml 配置
+cp src/main/resources/application.yml src/main/resources/application-prod.yml
 
-## 容器运行
-
-拷贝 [application.yml](src/main/resources/application.yml)
-填好配置放到当前目录 `./application.yml`
-
-```bash
-# 如果你不修改代码 不需要这一步
+# 构建镜像 (如果你不修改代码 不需要这一步 可以直接使用我的远程镜像)
 docker build -t zhuweiyou/msg-bot:latest .
 
 # 运行
-docker run -d \
-    -p 8080:8080 \
-    -v ./application.yml:/app/application.yml \
-    zhuweiyou/msg-bot:latest
+docker run --name msg-bot -d -p 8080:8080 zhuweiyou/msg-bot:latest
 ```
 
 ## 对接平台
