@@ -3,18 +3,23 @@ package com.zhuweiyou.msgbot.plugin.gpt;
 import com.zhuweiyou.msgbot.platform.Msg;
 import com.zhuweiyou.msgbot.platform.Platform;
 import com.zhuweiyou.msgbot.plugin.CommandPlugin;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
+@Slf4j
 @Component
 public class GptPlugin extends CommandPlugin {
-	private final Gpt gpt;
+	private final Set<Gpt> gptSet;
 
 	@Autowired
-	public GptPlugin(MoonshotGpt moonshotGpt) {
+	public GptPlugin(Set<Gpt> gptSet) {
 		super(true, "c", "g", "gpt", "chatgpt");
-		this.gpt = moonshotGpt;
+		this.gptSet = gptSet;
 	}
 
 	@Override
@@ -23,20 +28,18 @@ public class GptPlugin extends CommandPlugin {
 		if (!match(msg)) {
 			content = msg.getText();
 		}
+
 		if (Strings.isBlank(content)) {
 			return;
 		}
 
-		String result;
-		try {
-			result = gpt.prompt(content);
-		} catch (Exception ignored) {
+		String finalContent = content;
+		gptSet.forEach(gpt -> CompletableFuture.runAsync(() -> {
 			try {
-				result = gpt.prompt(content);
+				platform.replyText(msg, String.join("\n", "【" + gpt.name() + "】", gpt.prompt(finalContent)));
 			} catch (Exception e) {
-				result = e.getMessage();
+				log.error("GptPlugin execute {} error", gpt.name(), e);
 			}
-		}
-		platform.replyText(msg, result);
+		}));
 	}
 }

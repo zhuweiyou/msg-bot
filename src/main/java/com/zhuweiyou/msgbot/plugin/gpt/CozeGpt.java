@@ -2,7 +2,6 @@ package com.zhuweiyou.msgbot.plugin.gpt;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zhuweiyou.msgbot.common.AppConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -14,64 +13,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
-public class MoonshotGpt implements Gpt {
-	private final AppConfig appConfig;
-	private final MoonshotConfig moonshotConfig;
+public class CozeGpt implements Gpt {
+	private final CozeConfig cozeConfig;
 
 	@Autowired
-	public MoonshotGpt(MoonshotConfig moonshotConfig, AppConfig appConfig) {
-		this.moonshotConfig = moonshotConfig;
-		this.appConfig = appConfig;
+	public CozeGpt(CozeConfig cozeConfig) {
+		this.cozeConfig = cozeConfig;
 	}
 
 	@Override
 	public String name() {
-		return "moonshot";
+		return "coze";
 	}
 
 	@Override
 	public String prompt(String input) throws Exception {
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 			Map<String, Object> body = new HashMap<>();
-			body.put("model", "moonshot-v1-8k");
-			body.put("temperature", 0.5);
+			body.put("bot_id", "7376185451251531813");
+			body.put("user", "用户1");
+			body.put("query", input);
+			body.put("stream", false);
 
-			List<Map<String, Object>> messages = new ArrayList<>();
-			// Map<String, Object> system = new HashMap<>();
-			// system.put("role", "system");
-			// system.put("content", "");
-			// messages.add(system);
-
-			Map<String, Object> user = new HashMap<>();
-			user.put("role", "user");
-			user.put("content", input);
-			messages.add(user);
-
-			body.put("messages", messages);
-
-			HttpPost httpPost = new HttpPost("https://api.moonshot.cn/v1/chat/completions");
-			httpPost.setHeader("Authorization", "Bearer " + moonshotConfig.getNextApiKey());
+			HttpPost httpPost = new HttpPost("https://api.coze.cn/open_api/v2/chat");
+			httpPost.setHeader("Authorization", "Bearer " + cozeConfig.getNextApiKey());
 			httpPost.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(body),
 				ContentType.APPLICATION_JSON.withCharset(StandardCharsets.UTF_8)));
-
 			try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
 				String responseText = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-				if (responseText.contains("_error\"")) {
-					throw new Exception("请求失败");
-				}
-
-				JsonNode content = new ObjectMapper().readTree(responseText).path("choices").path(0).path("message").get("content");
+				JsonNode content = new ObjectMapper().readTree(responseText).path("messages").path(0).path("content");
 				if (content == null) {
 					throw new Exception("请求失败");
 				}
-				return content.asText().replaceAll("(?i)MoonshotAI", appConfig.getBotName())
-					.replaceAll("(?i)Moonshot Corp", "zhu");
+				return content.asText();
 			}
 		}
 	}
