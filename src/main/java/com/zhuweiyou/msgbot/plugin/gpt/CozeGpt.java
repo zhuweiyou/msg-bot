@@ -45,7 +45,7 @@ public class CozeGpt implements Gpt {
 				ContentType.APPLICATION_JSON.withCharset(StandardCharsets.UTF_8)));
 			try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
 				String responseText = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-				JsonNode content = new ObjectMapper().readTree(responseText).path("messages").path(0).path("content");
+				JsonNode content = new ObjectMapper().readTree(responseText).path("messages").path(0).get("content");
 				if (content == null) {
 					throw new Exception("请求失败");
 				}
