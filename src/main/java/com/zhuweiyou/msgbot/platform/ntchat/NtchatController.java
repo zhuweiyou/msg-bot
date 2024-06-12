@@ -27,7 +27,7 @@ public class NtchatController {
 	@PostMapping("/webhook")
 	public String webhook(@RequestBody NtchatWebhookBody body) {
 		log.info("NtchatController.webhook {}", body);
-		ntchatPlatform.parseBody(body).ifPresent(msg -> pluginService.execute(msg, ntchatPlatform));
+		ntchatPlatform.parseBody(body).ifPresent(msg -> pluginService.matchAll(msg, ntchatPlatform));
 		return "received";
 	}
 

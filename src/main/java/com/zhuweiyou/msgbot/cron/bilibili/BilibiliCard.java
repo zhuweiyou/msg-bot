@@ -14,7 +14,11 @@ public class BilibiliCard {
 
 	@Override
 	public String toString() {
-		return String.join("\n", String.format("【哔哩哔哩】%s", owner.getName()), title, "https://b23.tv/" + bvid);
+		return String.format("【哔哩哔哩】%s\n%s\nhttps://b23.tv/%s",
+			owner.getName(),
+			title,
+			bvid
+		);
 	}
 
 	@Data

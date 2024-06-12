@@ -25,7 +25,7 @@ public class KeywordReminderPlugin implements Plugin {
 		}
 
 		String text = msg.getText().replaceAll("\\s+", "").toLowerCase();
-		for (String keyword: keywordReminderConfig.getKeywordList()) {
+		for (String keyword : keywordReminderConfig.getKeywordList()) {
 			// 包含任意一个, 触发
 			if (text.contains(keyword.toLowerCase())) {
 				return true;

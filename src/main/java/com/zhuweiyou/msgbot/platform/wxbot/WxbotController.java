@@ -26,7 +26,7 @@ public class WxbotController {
 	@PostMapping("/webhook")
 	public String webhook(@RequestBody WxbotWebhookBody body) {
 		log.info("WxbotController.webhook {}", body);
-		wxbotPlatform.parseBody(body).ifPresent(msg -> pluginService.execute(msg, wxbotPlatform));
+		wxbotPlatform.parseBody(body).ifPresent(msg -> pluginService.matchAll(msg, wxbotPlatform));
 		return "received";
 	}
 

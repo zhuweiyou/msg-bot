@@ -26,7 +26,7 @@ public class CozeGpt implements Gpt {
 	}
 
 	@Override
-	public String name() {
+	public String getName() {
 		return "coze";
 	}
 

@@ -1,7 +1,6 @@
 package com.zhuweiyou.msgbot.plugin;
 
 import com.zhuweiyou.msgbot.platform.Msg;
-import com.zhuweiyou.msgbot.platform.Platform;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.Set;
@@ -33,7 +32,4 @@ public abstract class CommandPlugin implements Plugin {
 		}
 		return true;
 	}
-
-	@Override
-	abstract public void execute(Msg msg, Platform platform);
 }

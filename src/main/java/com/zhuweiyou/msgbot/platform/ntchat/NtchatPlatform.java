@@ -7,8 +7,8 @@ import com.zhuweiyou.msgbot.platform.Msg;
 import com.zhuweiyou.msgbot.platform.Platform;
 import com.zhuweiyou.msgbot.platform.User;
 import com.zhuweiyou.msgbot.platform.ntchat.client.*;
-import com.zhuweiyou.msgbot.store.MemoryStore;
-import com.zhuweiyou.msgbot.store.Store;
+import com.zhuweiyou.msgbot.store.MemoryMsgStore;
+import com.zhuweiyou.msgbot.store.MsgStore;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @Component
 public class NtchatPlatform implements Platform {
 	private final NtchatConfig ntchatConfig;
-	private final Store store = new MemoryStore();
+	private final MsgStore msgStore = new MemoryMsgStore();
 	private final NtchatClient ntchatClient;
 
 	@Autowired
@@ -68,7 +68,7 @@ public class NtchatPlatform implements Platform {
 			return Optional.empty();
 		}
 
-		store.save(msg);
+		msgStore.save(msg);
 
 		// 让引用消息(包括引用卡片) 也能响应
 		if (Strings.isBlank(msg.getText()) && Strings.isNotBlank(msg.getRaw())) {
@@ -76,7 +76,7 @@ public class NtchatPlatform implements Platform {
 			String replyId = StringUtil.getMiddle(msg.getRaw(), "<svrid>", "</svrid>").trim();
 			String replyMsg = StringUtil.getMiddle(msg.getRaw(), "<title>", "</title>").trim();
 			if (Strings.isNotBlank(replyId)) {
-				Optional<Msg> optionalMsg = store.find(replyId);
+				Optional<Msg> optionalMsg = msgStore.find(replyId);
 				if (optionalMsg.isPresent()) {
 					originMsg = optionalMsg.get();
 				}

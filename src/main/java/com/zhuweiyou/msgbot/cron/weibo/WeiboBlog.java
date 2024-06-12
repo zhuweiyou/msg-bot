@@ -17,9 +17,11 @@ public class WeiboBlog {
 
 	@Override
 	public String toString() {
-		return String.join("\n",
+		return String.format("%s\nhttps://weibo.com/%s/%s",
 			text.replaceAll("</?.*?>", "").replace("&amp;", "&").trim(),
-			String.format("https://weibo.com/%s/%s", user.getId(), bid));
+			user.getId(),
+			bid
+		);
 	}
 
 	@Data

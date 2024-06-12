@@ -35,7 +35,7 @@ public class LotteryPlugin extends CommandPlugin {
 		// 排除机器人和发起者
 		List<String> excludeList = List.of(platform.getBotUserId(), msg.getUserId());
 		Optional<Group> optionalGroup = platform.getGroup(msg.getGroupId());
-		List<String> userList = new ArrayList<String>();
+		List<String> userList = new ArrayList<>();
 		if (optionalGroup.isPresent()) {
 			userList = new ArrayList<>(optionalGroup.get().getUsers().stream().map(User::getId)
 				.filter(wxid -> !excludeList.contains(wxid)).toList());

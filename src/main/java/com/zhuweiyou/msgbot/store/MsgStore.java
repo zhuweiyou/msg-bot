@@ -4,7 +4,7 @@ import com.zhuweiyou.msgbot.platform.Msg;
 
 import java.util.Optional;
 
-public interface Store {
+public interface MsgStore {
 	void save(Msg msg);
 
 	Optional<Msg> find(String msgId);

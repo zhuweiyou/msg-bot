@@ -24,21 +24,18 @@ public class GptPlugin extends CommandPlugin {
 
 	@Override
 	public void execute(Msg msg, Platform platform) {
-		String content = msg.getContent();
-		if (!match(msg)) {
-			content = msg.getText();
-		}
-
+		// 私聊默认可以不带命令前缀
+		String content = match(msg) ? msg.getContent() : msg.getText();
 		if (Strings.isBlank(content)) {
 			return;
 		}
 
-		String finalContent = content;
 		gptSet.forEach(gpt -> CompletableFuture.runAsync(() -> {
 			try {
-				platform.replyText(msg, String.join("\n", "【" + gpt.name() + "】", gpt.prompt(finalContent)));
+				platform.replyText(msg, String.format("【%s】\n%s", gpt.getName(), gpt.prompt(content)));
 			} catch (Exception e) {
-				log.error("GptPlugin execute {} error", gpt.name(), e);
+				// 失败不回复
+				log.error("GptPlugin execute {} error", gpt.getName(), e);
 			}
 		}));
 	}

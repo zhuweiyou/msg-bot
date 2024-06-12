@@ -31,7 +31,7 @@ public class MoonshotGpt implements Gpt {
 	}
 
 	@Override
-	public String name() {
+	public String getName() {
 		return "moonshot";
 	}
 
