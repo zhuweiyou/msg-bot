@@ -32,7 +32,12 @@ public class GptPlugin extends CommandPlugin {
 
 		gptSet.forEach(gpt -> CompletableFuture.runAsync(() -> {
 			try {
-				platform.replyText(msg, String.format("【%s】\n%s", gpt.getName(), gpt.prompt(content)));
+				String result = gpt.prompt(content);
+				if (Strings.isBlank(result)) {
+					log.error("GptPlugin execute {} empty", gpt.getName());
+					return;
+				}
+				platform.replyText(msg, String.format("【%s】\n%s", gpt.getName(), result));
 			} catch (Exception e) {
 				// 失败不回复
 				log.error("GptPlugin execute {} error", gpt.getName(), e);
