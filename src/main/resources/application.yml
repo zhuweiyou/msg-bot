@@ -25,8 +25,8 @@ plugin:
         - key2
     coze:
       api-key-list:
-        - key1
-        - key2
+        - bot-id-1:access-token-1
+        - bot-id-2:access-token-2
   keywordreminder:
     keyword-list:
       - 关键词1

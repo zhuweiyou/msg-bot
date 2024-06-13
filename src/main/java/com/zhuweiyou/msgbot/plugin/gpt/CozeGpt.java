@@ -33,14 +33,19 @@ public class CozeGpt implements Gpt {
 	@Override
 	public String prompt(String input) throws Exception {
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+			String[] nextApiKey = cozeConfig.getNextApiKey().split(":");
+			if (nextApiKey.length != 2) {
+				throw new Exception("token配置错误");
+			}
+
 			Map<String, Object> body = new HashMap<>();
-			body.put("bot_id", "7376185451251531813");
+			body.put("bot_id", nextApiKey[0]);
 			body.put("user", "用户1");
 			body.put("query", input);
 			body.put("stream", false);
 
 			HttpPost httpPost = new HttpPost("https://api.coze.cn/open_api/v2/chat");
-			httpPost.setHeader("Authorization", "Bearer " + cozeConfig.getNextApiKey());
+			httpPost.setHeader("Authorization", "Bearer " + nextApiKey[1]);
 			httpPost.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(body),
 				ContentType.APPLICATION_JSON.withCharset(StandardCharsets.UTF_8)));
 			try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
