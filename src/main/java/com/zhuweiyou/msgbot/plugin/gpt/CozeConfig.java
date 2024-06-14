@@ -2,21 +2,23 @@ package com.zhuweiyou.msgbot.plugin.gpt;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
-@Component
-@ConfigurationProperties(prefix = "plugin.gpt.coze")
 @Data
+@Configuration
+@EnableConfigurationProperties
 public class CozeConfig {
-	private List<String> apiKeyList;
+	@Bean
+	@ConfigurationProperties(prefix = "plugin.gpt.coze.normal-bot")
+	public CozeBot getNormalBot() {
+		return new CozeBot();
+	}
 
-	private int apiKeyIndex;
-
-	public String getNextApiKey() {
-		String apiKey = apiKeyList.get(apiKeyIndex);
-		apiKeyIndex = (apiKeyIndex + 1) % apiKeyList.size();
-		return apiKey;
+	@Bean
+	@ConfigurationProperties(prefix = "plugin.gpt.coze.fuck-bot")
+	public CozeBot getFuckBot() {
+		return new CozeBot();
 	}
 }

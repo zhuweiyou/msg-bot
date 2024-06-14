@@ -15,24 +15,34 @@ import java.util.concurrent.CompletableFuture;
 @Component
 public class GptPlugin extends CommandPlugin {
 	private final Set<Gpt> gptSet;
+	private final Set<String> fuckCommandSet = Set.of("f", "fuck");
 
 	@Autowired
 	public GptPlugin(Set<Gpt> gptSet) {
-		super(true, "c", "g", "gpt", "chatgpt");
+		super(true, "c", "g", "gpt", "chatgpt", "f", "fuck");
 		this.gptSet = gptSet;
 	}
 
 	@Override
 	public void execute(Msg msg, Platform platform) {
 		// 私聊默认可以不带命令前缀
-		String content = match(msg) ? msg.getContent() : msg.getText();
+		String content;
+		boolean fuck;
+		if (match(msg)) {
+			content = msg.getContent();
+			fuck = fuckCommandSet.contains(msg.getCommand().toLowerCase());
+		} else {
+			content = msg.getText();
+			fuck = false;
+		}
+
 		if (Strings.isBlank(content)) {
 			return;
 		}
 
 		gptSet.forEach(gpt -> CompletableFuture.runAsync(() -> {
 			try {
-				String result = gpt.prompt(content);
+				String result = gpt.prompt(content, fuck);
 				if (Strings.isBlank(result)) {
 					log.error("GptPlugin execute {} empty", gpt.getName());
 					return;

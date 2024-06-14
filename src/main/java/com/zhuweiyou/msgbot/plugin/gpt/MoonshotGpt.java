@@ -36,7 +36,11 @@ public class MoonshotGpt implements Gpt {
 	}
 
 	@Override
-	public String prompt(String input) throws Exception {
+	public String prompt(String input, boolean fuck) throws Exception {
+		if (fuck) {
+			throw new Exception("暂不支持脏话");
+		}
+
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 			Map<String, Object> body = new HashMap<>();
 			body.put("model", "moonshot-v1-8k");
