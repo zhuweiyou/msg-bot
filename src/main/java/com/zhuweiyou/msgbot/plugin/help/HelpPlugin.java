@@ -18,6 +18,7 @@ public class HelpPlugin extends CommandPlugin {
 			"[C或G] 问答机器人",
 			"[CJ] 抽奖(随机1名群成员中奖)",
 			"[DJS] 节日倒计时",
+			"[F] 脏话机器人",
 			"[FY] 中英互译",
 			"[JS] 运行JS代码",
 			"[PY] 汉字转拼音",
