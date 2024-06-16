@@ -10,4 +10,5 @@ import org.springframework.stereotype.Component;
 public class AppConfig {
 	private String botName;
 	private String serverUrl;
+	private String adminName;
 }

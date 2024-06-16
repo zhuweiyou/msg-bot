@@ -8,6 +8,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,15 +45,17 @@ public class BaiduTranslator implements Translator {
 				.setParameter("sign", sign)
 				.build();
 			HttpGet httpGet = new HttpGet(uri);
-
 			try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
 				String responseText = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
 				BaiduResponse baiduResponse = new ObjectMapper().readValue(responseText, BaiduResponse.class);
 				if (!baiduResponse.isSuccess()) {
 					throw new Exception(baiduResponse.getError_msg());
 				}
-
-				return baiduResponse.getTrans_result().stream().map(BaiduResponse.TransResult::getDst).collect(Collectors.joining());
+				String dst = baiduResponse.getTrans_result().stream().map(BaiduResponse.TransResult::getDst).collect(Collectors.joining());
+				if (Strings.isBlank(dst)) {
+					throw new Exception("翻译失败");
+				}
+				return dst;
 			}
 		}
 	}

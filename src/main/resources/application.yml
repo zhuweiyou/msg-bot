@@ -1,6 +1,7 @@
 app:
   server-url: http://localhost:8080
   bot-name: 阿尔法猪
+  admin-name: zhu
 
 platform:
   ntchat:
