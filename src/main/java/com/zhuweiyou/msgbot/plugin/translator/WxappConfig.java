@@ -5,10 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "plugin.translator.baidu")
+@ConfigurationProperties(prefix = "plugin.translator.wxapp")
 @Data
-public class BaiduConfig {
-	// 百度翻译 收费版key
-	private String appId;
-	private String appKey;
+public class WxappConfig {
+	// 腾讯翻译君 小程序抓包获得此参数
+	private String guid;
 }

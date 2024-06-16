@@ -18,6 +18,8 @@ plugin:
     baidu:
       app-id:
       app-key:
+    wxapp:
+      guid:
   gpt:
     moonshot:
       api-key-list:

@@ -8,12 +8,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
-import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
-@Component
+@Deprecated
 public class IcibaTranslator implements Translator {
 	@Override
 	public String getName() {

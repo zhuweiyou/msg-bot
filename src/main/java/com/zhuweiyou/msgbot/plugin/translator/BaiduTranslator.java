@@ -26,7 +26,7 @@ public class BaiduTranslator implements Translator {
 
 	@Override
 	public String getName() {
-		return "百度";
+		return "百度翻译";
 	}
 
 	@Override
