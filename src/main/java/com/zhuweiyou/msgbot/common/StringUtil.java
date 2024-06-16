@@ -1,7 +1,6 @@
 package com.zhuweiyou.msgbot.common;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class StringUtil {
@@ -53,24 +52,6 @@ public class StringUtil {
 			input = String.format("%s\n\n防止刷屏仅显示前%d行",
 				Arrays.stream(rows).limit(limit).collect(Collectors.joining("\n")),
 				limit);
-		}
-
-		return input;
-	}
-
-	private final static Map<String, String> MATH_CHARS_MAP = Map.of(
-		"　", " ",
-		"（", "(",
-		"）", ")",
-		"×", "*",
-		"x", "*",
-		"X", "*",
-		"÷", "/"
-	);
-
-	public static String replaceMathChars(String input) {
-		for (Map.Entry<String, String> entry : MATH_CHARS_MAP.entrySet()) {
-			input = input.replace(entry.getKey(), entry.getValue());
 		}
 
 		return input;
