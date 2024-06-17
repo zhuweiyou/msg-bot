@@ -93,7 +93,7 @@ public class NtchatPlatform implements Platform {
 					.trim();
 			}
 			if (Strings.isNotBlank(originText)) {
-				originMsg.setText(String.format("%s %s", replyMsg, originText));
+				originMsg.setText(String.join("\n", replyMsg, originText));
 				originMsg.setRaw(msg.getRaw());
 				msg = originMsg;
 			}
